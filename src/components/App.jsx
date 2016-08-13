@@ -4,8 +4,14 @@ class App extends React.Component {
 
     this.state = {
       currentVideo: exampleVideoData[0],
-      videoList: exampleVideoData
+      videoList: []
     };
+
+    // this.setVideoList('ab');
+  }
+
+  componentDidMount() {
+    this.setVideoList('ab');
   }
 
   setCurrentVideo(video) {
@@ -14,10 +20,30 @@ class App extends React.Component {
     });
   }
 
+  // setVideoList(videoData) {
+  //   this.setState({
+  //     videoList: videoData
+  //   });
+  // }
+
+  setVideoList(query) {
+    var options = {
+      q: query,
+      part: 'snippet',
+      type: 'video', 
+      videoEmbeddable: true,
+      maxResults: 10,
+      key: window.YOUTUBE_API_KEY,
+    };
+
+    var setListState = (data) => this.setState({videoList: data});
+    this.props.searchYouTube(options, setListState.bind(this)); 
+  }
+
   render() {
     return (
       <div>
-        <Nav />
+        <Nav setVideoList={this.setVideoList.bind(this)}/>
         <div className="col-md-7">
           <VideoPlayer video={this.state.currentVideo}/>
         </div>
